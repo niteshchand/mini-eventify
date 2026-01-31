@@ -37,3 +37,23 @@ func GetUserBookings(c *gin.Context) {
 
 	c.JSON(http.StatusOK, bookings)
 }
+func CancelBooking(c *gin.Context) {
+	userID := c.GetUint("userId")
+	bookingID := c.Param("id")
+
+	var booking models.Booking
+
+	if err := config.DB.First(&booking, bookingID).Error; err != nil {
+		c.JSON(404, gin.H{"error": "Booking not found"})
+		return
+	}
+
+	if booking.UserID != userID {
+		c.JSON(403, gin.H{"error": "Unauthorized"})
+		return
+	}
+
+	config.DB.Delete(&booking)
+	c.JSON(200, gin.H{"message": "Booking cancelled"})
+}
+

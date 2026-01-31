@@ -43,3 +43,14 @@ func GetEvents(c *gin.Context) {
 
 	c.JSON(http.StatusOK, events)
 }
+func GetEventByID(c *gin.Context) {
+	id := c.Param("id")
+	var event models.Event
+
+	if err := config.DB.First(&event, id).Error; err != nil {
+		c.JSON(404, gin.H{"error": "Event not found"})
+		return
+	}
+
+	c.JSON(200, event)
+}

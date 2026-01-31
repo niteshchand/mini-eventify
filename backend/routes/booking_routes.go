@@ -9,9 +9,12 @@ import (
 )
 
 func BookingRoutes(r *gin.Engine) {
-	protected := r.Group("/")
-	protected.Use(middleware.AuthMiddleware())
-
-	protected.POST("/bookings", controllers.CreateBooking)
-	protected.GET("/bookings", controllers.GetUserBookings)
+	auth := r.Group("/")
+	auth.Use(middleware.AuthMiddleware())
+	{
+		auth.POST("/bookings", controllers.CreateBooking)
+		auth.GET("/bookings", controllers.GetUserBookings)
+		auth.DELETE("/bookings/:id", controllers.CancelBooking)
+	}
 }
+
